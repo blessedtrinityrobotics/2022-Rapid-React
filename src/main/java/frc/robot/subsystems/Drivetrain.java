@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.Constants.DriveConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   MotorControllerGroup m_left = new MotorControllerGroup(
-    new VictorSP(3), 
-    new VictorSP(2));
+    new VictorSP(kFrontLeftMotorPort), 
+    new VictorSP(kBackLeftMotorPort));
 
   MotorControllerGroup m_right = new MotorControllerGroup(
-    new VictorSP(1),
-    new VictorSP(0)
+    new VictorSP(kFrontRightMotorPort),
+    new VictorSP(kBackRightMotorPort)
   );
 
   DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
@@ -32,6 +33,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double speed, double direction) {
-    m_drive.arcadeDrive(speed * 1, direction * 1);
+    m_drive.arcadeDrive(speed, direction);
   }
 }
