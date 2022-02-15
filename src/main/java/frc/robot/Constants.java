@@ -25,4 +25,8 @@ public final class Constants {
         public static final int kRightJoystickPort = 1;
     }
 
+    public static final class ShuffleboardConstants {
+        public static final String kDriveTab = "Drive";
+    }
+
 }

@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.ShuffleboardConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   MotorControllerGroup m_left = new MotorControllerGroup(
@@ -20,11 +23,15 @@ public class Drivetrain extends SubsystemBase {
     new VictorSP(kBackRightMotorPort)
   );
 
+  ADIS16470_IMU gyro = new ADIS16470_IMU();
+
   DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
   
   /** Creates a new Drivetrain. */
   public Drivetrain() {
     m_right.setInverted(true);
+
+    Shuffleboard.getTab(kDriveTab).add("Gyro", gyro);
   }
 
   @Override
