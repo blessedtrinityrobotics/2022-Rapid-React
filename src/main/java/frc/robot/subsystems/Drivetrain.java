@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.ShuffleboardConstants.*;
 
+import java.beans.Encoder;
+
 public class Drivetrain extends SubsystemBase {
   MotorControllerGroup m_left = new MotorControllerGroup(
     new VictorSP(kFrontLeftMotorPort), 
@@ -23,8 +25,10 @@ public class Drivetrain extends SubsystemBase {
     new VictorSP(kBackRightMotorPort)
   );
 
-  ADIS16470_IMU gyro = new ADIS16470_IMU();
+  Encoder m_leftEncoder = new Encoder(); // placeholder values
+  Encoder m_rightEncoder = new Encoder();
 
+  ADIS16470_IMU gyro = new ADIS16470_IMU();
   DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
   
   /** Creates a new Drivetrain. */
