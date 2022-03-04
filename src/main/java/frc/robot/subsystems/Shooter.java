@@ -4,17 +4,27 @@
 
 package frc.robot.subsystems;
 
+import java.io.Console;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.ShuffleboardConstants;
 
 public class Shooter extends SubsystemBase {
-  private final VictorSPX m_masterMotor = new VictorSPX(14);
-  private final VictorSPX m_followerMotor = new VictorSPX(15);
+  private final VictorSPX m_masterMotor = new VictorSPX(2);
+  private final VictorSPX m_followerMotor = new VictorSPX(3);
 
   /** Creates a new Shooter. */
   public Shooter() {
     m_followerMotor.follow(m_masterMotor);
+
+    m_followerMotor.setInverted(InvertType.OpposeMaster);
   }
 
   @Override

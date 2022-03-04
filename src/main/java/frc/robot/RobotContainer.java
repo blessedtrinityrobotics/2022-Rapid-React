@@ -8,11 +8,15 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.IndexUp;
 import frc.robot.commands.SpinShooterRaw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Indexer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import static frc.robot.Constants.OIConstants.*;
 
 /**
@@ -24,9 +28,11 @@ import static frc.robot.Constants.OIConstants.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Indexer m_indexer = new Indexer();
   private final Shooter m_shooter = new Shooter();
-
   private final Joystick m_joystick = new Joystick(kLeftJoystickPort);
+  private final JoystickButton m_button1 = new JoystickButton(m_joystick, 1);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -48,6 +54,8 @@ public class RobotContainer {
     // );
 
     m_shooter.setDefaultCommand(new SpinShooterRaw(() -> m_joystick.getY(), m_shooter));
+
+    m_button1.whenHeld(new IndexUp(m_indexer));
   }
 
   /**

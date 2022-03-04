@@ -18,6 +18,19 @@ public final class Constants {
         public static final int kBackLeftMotorPort = 2;
         public static final int kFrontRightMotorPort = 1;
         public static final int kBackRightMotorPort = 0;
+        public static final int[] kLeftEncoder = {0, 1};
+        public static final int[] kRightEncoder = {9, 8};
+    }
+
+    public static final class IndexConstants {
+        public static final int kHorizontalMotorId = -1;
+        public static final int kVerticalFrontMotorId = 7;
+        public static final int kVerticalBackMotorId = 4;
+    }
+
+    public static final class ShooterConstants {
+        public static final int kMasterMotorId = 0;
+        public static final int kFollowerMotorId = 0;
     }
 
     public static final class OIConstants {
