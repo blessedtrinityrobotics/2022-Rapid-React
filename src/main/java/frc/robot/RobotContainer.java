@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.IndexUp;
-import frc.robot.commands.SpinShooterRaw;
+import frc.robot.commands.DriveDistance;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -30,8 +30,8 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Indexer m_indexer = new Indexer();
   private final Shooter m_shooter = new Shooter();
+  private final Intake m_intake = new Intake();
   private final Joystick m_joystick = new Joystick(kLeftJoystickPort);
-  private final JoystickButton m_button1 = new JoystickButton(m_joystick, 1);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -53,9 +53,19 @@ public class RobotContainer {
     //   m_drivetrain)
     // );
 
-    m_shooter.setDefaultCommand(new SpinShooterRaw(() -> m_joystick.getY(), m_shooter));
+    m_shooter.setDefaultCommand(new InstantCommand(() -> m_shooter.spinRaw(m_joystick.getY()), m_shooter));
 
-    m_button1.whenHeld(new IndexUp(m_indexer));
+    new JoystickButton(m_joystick, 1)
+      .whenPressed(new InstantCommand(m_indexer::up, m_indexer))
+      .whenReleased(new InstantCommand(m_indexer::stopVertical, m_indexer));
+
+    new JoystickButton(m_joystick, 2)
+      .whenPressed(new InstantCommand(m_indexer::down, m_indexer))
+      .whenReleased(new InstantCommand(m_indexer::stopVertical, m_indexer));
+
+    new JoystickButton(m_joystick, 3)
+      .whenPressed(new InstantCommand(m_intake::suck, m_intake))
+      .whenReleased(new InstantCommand(m_intake::stop, m_intake));
   }
 
   /**
@@ -64,7 +74,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand(() -> {});
+    // Drive forward 1 meter
+    return new DriveDistance(m_drivetrain, 1.0);
   }
 }

@@ -4,7 +4,8 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -35,6 +36,9 @@ public class Drivetrain extends SubsystemBase {
     m_right.setInverted(true);
     m_leftEncoder.setReverseDirection(true);
 
+    m_leftEncoder.setDistancePerPulse(kDistancePerPulse);
+    m_rightEncoder.setDistancePerPulse(kDistancePerPulse);
+
     Shuffleboard.getTab(kDriveTab).add("Left Encoder", m_leftEncoder);
     Shuffleboard.getTab(kDriveTab).add("Right Encoder", m_rightEncoder);
   }
@@ -44,9 +48,24 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder.reset();
   }
 
-  public void drive(double speed, double direction) {
+  public double getLeftDist() {
+    return m_leftEncoder.getDistance();
+  }
+
+  public double getRightDist() {
+    return m_rightEncoder.getDistance();
+  }
+
+  public void arcadeDrive(double speed, double direction) {
     m_drive.arcadeDrive(speed, direction);
   }
 
-  
+  public void tankDrive(double left, double right) {
+    m_drive.tankDrive(left, right);
+  }
+
+  public void setPower(double leftPower, double rightPower) {
+    m_left.set(leftPower);
+    m_right.set(rightPower);
+  }
 }

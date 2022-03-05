@@ -31,13 +31,13 @@ public class ArcadeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        m_drivetrain.drive(m_left.getAsDouble(), m_right.getAsDouble());
+        m_drivetrain.arcadeDrive(m_left.getAsDouble(), m_right.getAsDouble());
     }
 
     @Override
     public void end(boolean interrupted) {
         //Reset arcade drive
-        m_drivetrain.drive(0, 0);
+        m_drivetrain.arcadeDrive(0, 0);
     }
 
 }
