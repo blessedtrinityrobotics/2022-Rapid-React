@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -18,8 +19,9 @@ import static frc.robot.Constants.ShuffleboardConstants.*;
 import java.util.Map;
 
 public class Indexer extends SubsystemBase {
-  private final TalonSRX m_front = new TalonSRX(kVerticalFrontMotorId);
+  private final VictorSPX m_front = new VictorSPX(kVerticalFrontMotorId);
   private final TalonSRX m_back = new TalonSRX(kVerticalBackMotorId);
+  private final VictorSPX m_hori = new VictorSPX(kHorizontalMotorId);
 
   NetworkTableEntry m_power = 
     Shuffleboard.getTab(kDriveTab)
@@ -46,8 +48,16 @@ public class Indexer extends SubsystemBase {
     m_front.set(ControlMode.PercentOutput, 0);
   }
 
-  public void back(double power) {
+  public void horizontalIn() {
+    m_hori.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultPower));
+  }
+  
+  public void horizontalOut() {
+    m_hori.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultPower));
+  }
 
+  public void stopHorizontal() {
+    m_hori.set(ControlMode.PercentOutput, 0);
   }
 
 }

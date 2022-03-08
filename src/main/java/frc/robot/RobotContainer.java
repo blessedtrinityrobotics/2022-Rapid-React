@@ -15,6 +15,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import static frc.robot.Constants.OIConstants.*;
@@ -31,7 +32,8 @@ public class RobotContainer {
   private final Indexer m_indexer = new Indexer();
   private final Shooter m_shooter = new Shooter();
   private final Intake m_intake = new Intake();
-  private final Joystick m_joystick = new Joystick(kLeftJoystickPort);
+  private final Joystick m_joystick = new Joystick(kDriverJoystickPort);
+  private final Joystick m_altJoystick = new Joystick(kShooterJoystickPort);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -47,25 +49,39 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // m_drivetrain.setDefaultCommand(new ArcadeDrive(
-    //   () -> m_joystick.getY(), 
-    //   () -> m_joystick.getX(),
-    //   m_drivetrain)
-    // );
+    m_drivetrain.setDefaultCommand(new ArcadeDrive(
+      () -> -m_joystick.getY(), 
+      () -> m_joystick.getX(),
+      m_drivetrain)
+    );
 
-    m_shooter.setDefaultCommand(new InstantCommand(() -> m_shooter.spinRaw(m_joystick.getY()), m_shooter));
+    Command indexUp = new InstantCommand(m_indexer::up, m_indexer);
+    Command indexDown = new InstantCommand(m_indexer::down, m_indexer);
+    Command indexVertStop = new InstantCommand(m_indexer::stopVertical, m_indexer);
+    Command indexIn = new InstantCommand(m_indexer::horizontalIn, m_indexer);
+    Command indexOut = new InstantCommand(m_indexer::horizontalOut, m_indexer);
+    Command indexHoriStop = new InstantCommand(m_indexer::stopHorizontal, m_indexer);
+    // Command collectiveIndex = indexIn.alongWith(indexUp);
+    // Command invCollectiveIndex = indexOut.alongWith(indexDown);
+    // Command collectiveStopIndex = indexVertStop.alongWith(indexHoriStop);
+
+    
+    m_shooter.setDefaultCommand(new RunCommand(
+      () -> m_shooter.spinRaw(m_altJoystick.getY()), m_shooter));
+
+    new JoystickButton(m_joystick, kDriverIndexUpButton)
+      .whenPressed(indexUp)
+      .whenReleased(indexVertStop);
+
+    new JoystickButton(m_joystick, kDriverIndexDownButton)
+      .whenPressed(indexIn)
+      .whenReleased(indexHoriStop);
 
     new JoystickButton(m_joystick, 1)
-      .whenPressed(new InstantCommand(m_indexer::up, m_indexer))
-      .whenReleased(new InstantCommand(m_indexer::stopVertical, m_indexer));
-
-    new JoystickButton(m_joystick, 2)
-      .whenPressed(new InstantCommand(m_indexer::down, m_indexer))
-      .whenReleased(new InstantCommand(m_indexer::stopVertical, m_indexer));
-
-    new JoystickButton(m_joystick, 3)
       .whenPressed(new InstantCommand(m_intake::suck, m_intake))
       .whenReleased(new InstantCommand(m_intake::stop, m_intake));
+
+    
   }
 
   /**
@@ -75,6 +91,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Drive forward 1 meter
-    return new DriveDistance(m_drivetrain, 1.0);
+    return new RunCommand(
+      () -> m_drivetrain.tankDrive(0.75, 0.75), m_drivetrain)
+      .withTimeout(5.0);
   }
 }

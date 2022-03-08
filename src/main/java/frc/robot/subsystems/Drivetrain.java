@@ -33,14 +33,13 @@ public class Drivetrain extends SubsystemBase {
   
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    m_right.setInverted(true);
-    m_leftEncoder.setReverseDirection(true);
+    m_left.setInverted(true);
 
     m_leftEncoder.setDistancePerPulse(kDistancePerPulse);
     m_rightEncoder.setDistancePerPulse(kDistancePerPulse);
 
-    Shuffleboard.getTab(kDriveTab).add("Left Encoder", m_leftEncoder);
-    Shuffleboard.getTab(kDriveTab).add("Right Encoder", m_rightEncoder);
+    Shuffleboard.getTab(kAutoTab).add("Left Encoder", m_leftEncoder);
+    Shuffleboard.getTab(kAutoTab).add("Right Encoder", m_rightEncoder);
   }
   
   public void resetEncoders() {

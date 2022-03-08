@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -17,17 +19,19 @@ import static frc.robot.Constants.ShuffleboardConstants.*;
 import java.util.Map;
 
 public class Intake extends SubsystemBase {
-  private final VictorSPX m_motor = new VictorSPX(kIntakeMotorId);
+  private final TalonSRX m_motor = new TalonSRX(kIntakeMotorId);
 
   NetworkTableEntry m_power = 
     Shuffleboard.getTab(kDriveTab)
-      .add("Intake Power", 1)
+      .add("Intake Power", kDefaultPower)
       .withWidget(BuiltInWidgets.kNumberSlider)
       .withProperties(Map.of("min", 0, "max", 1))
       .getEntry();
 
   /** Creates a new Intake. */
-  public Intake() {}
+  public Intake() {
+    m_motor.setInverted(InvertType.InvertMotorOutput);
+  }
 
   public void suck() {
     m_motor.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultPower));

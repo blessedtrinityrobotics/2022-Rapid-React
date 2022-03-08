@@ -19,7 +19,7 @@ public final class Constants {
         public static final int kFrontRightMotorPort = 1;
         public static final int kBackRightMotorPort = 0;
         public static final int[] kLeftEncoder = {0, 1};
-        public static final int[] kRightEncoder = {9, 8};
+        public static final int[] kRightEncoder = {2, 3};
         public static final double kWheelDiameter = 0.1524; // Wheels are 6 in -> to meters
         public static final double kEncoderCPR = 360.0;
         public static final double kDistancePerPulse = 1.0 / kEncoderCPR * kWheelDiameter * Math.PI; // For every one rotation, distance traveled should be the circumference of wheel
@@ -30,29 +30,37 @@ public final class Constants {
     }
 
     public static final class IndexConstants {
-        public static final int kHorizontalMotorId = -1;
-        public static final int kVerticalFrontMotorId = 7;
-        public static final int kVerticalBackMotorId = 4;
-        public static final double kDefaultPower = 0.5; 
+        public static final int kHorizontalMotorId = 6;
+        public static final int kVerticalFrontMotorId = 5;
+        public static final int kVerticalBackMotorId = 7;
+        public static final double kDefaultPower = 0.25; 
     }
 
     public static final class ShooterConstants {
-        public static final int kMasterMotorId = 0;
-        public static final int kFollowerMotorId = 0;
+        public static final int kMasterMotorId = 2;
+        public static final int kFollowerMotorId = 3;
     }
 
     public static final class IntakeConstants {
-        public static final int kIntakeMotorId = 0; 
-        public static final double kDefaultPower = 1.0;
+        public static final int kIntakeMotorId = 4; 
+        public static final double kDefaultPower = 0.5;
     }
 
     public static final class OIConstants {
-        public static final int kLeftJoystickPort = 0;
-        public static final int kRightJoystickPort = 1;
+        // The driver joystick controls the drivetrain, intake, and indexer
+        public static final int kDriverJoystickPort = 0;
+        public static final int kDriverIntakeButton = 1;
+        public static final int kDriverIndexUpButton = 3;
+        public static final int kDriverIndexDownButton = 2;
+        // Shooter joystick primarily controls shooter and indexer, but can control intake as well
+        public static final int kShooterJoystickPort = 1;
+        public static final int kShooterIntakeButton = 3;
+        public static final int kSHooterIndexerButton = 1;
     }
 
     public static final class ShuffleboardConstants {
         public static final String kDriveTab = "Drive";
+        public static final String kAutoTab = "Auto";
     }
 
 }
