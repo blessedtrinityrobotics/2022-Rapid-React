@@ -30,7 +30,6 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    m_motor.setInverted(InvertType.InvertMotorOutput);
   }
 
   public void suck() {

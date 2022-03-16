@@ -4,17 +4,24 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.ShuffleboardConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.ShootAuto;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.HorizontalIndexer;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.VerticalIndexer;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -29,15 +36,27 @@ import static frc.robot.Constants.OIConstants.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
-  private final Indexer m_indexer = new Indexer();
+  private final VerticalIndexer m_verticalIndexer = new VerticalIndexer();
   private final Shooter m_shooter = new Shooter();
   private final Intake m_intake = new Intake();
   private final Joystick m_joystick = new Joystick(kDriverJoystickPort);
   private final Joystick m_altJoystick = new Joystick(kShooterJoystickPort);
+  private final HorizontalIndexer m_horizontalIndexer = new HorizontalIndexer();
 
+  // state
+  private double directionMultiplier = 1.0;
 
+  NetworkTableEntry m_driveTime = Shuffleboard.getTab(ShuffleboardConstants.kAutoTab)
+    .add("Auto Drive Time", AutoConstants.kDefaultDriveTime)
+    .getEntry();
+
+  NetworkTableEntry m_shotPower = Shuffleboard.getTab(ShuffleboardConstants.kAutoTab)
+    .add("Auto shot power", AutoConstants.kDefaultShotPower)
+    .getEntry();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -50,38 +69,77 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     m_drivetrain.setDefaultCommand(new ArcadeDrive(
-      () -> -m_joystick.getY(), 
+      () -> -m_joystick.getY() * m_joystick.getZ(), 
       () -> m_joystick.getX(),
       m_drivetrain)
     );
-
-    Command indexUp = new InstantCommand(m_indexer::up, m_indexer);
-    Command indexDown = new InstantCommand(m_indexer::down, m_indexer);
-    Command indexVertStop = new InstantCommand(m_indexer::stopVertical, m_indexer);
-    Command indexIn = new InstantCommand(m_indexer::horizontalIn, m_indexer);
-    Command indexOut = new InstantCommand(m_indexer::horizontalOut, m_indexer);
-    Command indexHoriStop = new InstantCommand(m_indexer::stopHorizontal, m_indexer);
-    // Command collectiveIndex = indexIn.alongWith(indexUp);
-    // Command invCollectiveIndex = indexOut.alongWith(indexDown);
-    // Command collectiveStopIndex = indexVertStop.alongWith(indexHoriStop);
-
     
     m_shooter.setDefaultCommand(new RunCommand(
       () -> m_shooter.spinRaw(m_altJoystick.getY()), m_shooter));
 
-    new JoystickButton(m_joystick, kDriverIndexUpButton)
-      .whenPressed(indexUp)
-      .whenReleased(indexVertStop);
+    Command indexUp = new InstantCommand(m_verticalIndexer::up, m_verticalIndexer);
+    Command indexDown = new InstantCommand(m_verticalIndexer::down, m_verticalIndexer);
+    Command indexStopVert = new InstantCommand(m_verticalIndexer::stop, m_verticalIndexer);
+    Command indexIn = new InstantCommand(m_horizontalIndexer::into, m_horizontalIndexer);
+    Command indexOut = new InstantCommand(m_horizontalIndexer::out, m_horizontalIndexer);
+    Command indexStopHori = new InstantCommand(m_horizontalIndexer::stop, m_horizontalIndexer);
+    Command index = new ParallelCommandGroup(
+      new InstantCommand(m_verticalIndexer::up, m_verticalIndexer),
+      new InstantCommand(m_horizontalIndexer::into, m_horizontalIndexer)
+    );
+    Command reverseIndex = new ParallelCommandGroup(
+      new InstantCommand(m_verticalIndexer::down, m_verticalIndexer),
+      new InstantCommand(m_horizontalIndexer::out, m_horizontalIndexer)
+    );
+    Command stopIndex = new ParallelCommandGroup(
+      new InstantCommand(m_verticalIndexer::stop, m_verticalIndexer),
+      new InstantCommand(m_horizontalIndexer::stop, m_horizontalIndexer)
+    );
 
-    new JoystickButton(m_joystick, kDriverIndexDownButton)
-      .whenPressed(indexIn)
-      .whenReleased(indexHoriStop);
+    // Driver Joystick binds
+    new JoystickButton(m_joystick, kIndexButton)
+      .whenPressed(index)
+      .whenReleased(stopIndex);
 
-    new JoystickButton(m_joystick, 1)
+    new JoystickButton(m_joystick, kReverseIndexButton)
+      .whenPressed(reverseIndex)
+      .whenReleased(stopIndex);
+
+    new JoystickButton(m_joystick, kIntakeButton)
       .whenPressed(new InstantCommand(m_intake::suck, m_intake))
       .whenReleased(new InstantCommand(m_intake::stop, m_intake));
 
+    new JoystickButton(m_joystick, kDriverHorizontalIndexInButton)
+      .whenPressed(indexIn)
+      .whenReleased(indexStopHori);
     
+    new JoystickButton(m_joystick, kDriverHorizontalIndexOutButton)
+      .whenPressed(indexOut)
+      .whenReleased(indexStopHori);
+
+    new JoystickButton(m_joystick, kDriverSwitchDirection)
+      .whenPressed(new InstantCommand(() -> directionMultiplier *= -1.0, m_drivetrain));
+
+    // Shooter joystick binds
+    new JoystickButton(m_altJoystick, kIndexButton)
+      .whenPressed(index)
+      .whenReleased(stopIndex);
+
+    new JoystickButton(m_altJoystick, kReverseIndexButton)
+      .whenPressed(reverseIndex)
+      .whenReleased(stopIndex);
+
+    new JoystickButton(m_altJoystick, kIntakeButton)
+      .whenPressed(new InstantCommand(m_intake::suck, m_intake))
+      .whenReleased(new InstantCommand(m_intake::stop, m_intake));
+
+    new JoystickButton(m_altJoystick, kShooterVerticalIndexUpButton)
+      .whenPressed(indexUp)
+      .whenReleased(indexStopVert);
+
+    new JoystickButton(m_altJoystick, kShooterVerticalIndexDownButton)
+      .whenPressed(indexDown)
+      .whenReleased(indexStopVert);
   }
 
   /**
@@ -91,8 +149,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Drive forward 1 meter
-    return new RunCommand(
-      () -> m_drivetrain.tankDrive(0.75, 0.75), m_drivetrain)
-      .withTimeout(5.0);
+    return new ShootAuto(m_drivetrain, m_shooter, m_verticalIndexer, m_horizontalIndexer, m_driveTime.getDouble(AutoConstants.kDefaultDriveTime), -m_shotPower.getDouble(AutoConstants.kDefaultShotPower));
   }
 }

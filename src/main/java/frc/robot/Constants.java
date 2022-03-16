@@ -27,13 +27,15 @@ public final class Constants {
 
     public static final class AutoConstants {
         public static final double kDriveControllerTolerance = 0.2; // meters
+        public static final double kDefaultDriveTime = 1.7; // seconds
+        public static final double kDefaultShotPower = 0.65;
     }
 
     public static final class IndexConstants {
         public static final int kHorizontalMotorId = 6;
         public static final int kVerticalFrontMotorId = 5;
         public static final int kVerticalBackMotorId = 7;
-        public static final double kDefaultPower = 0.25; 
+        public static final double kDefaultPower = 0.825; 
     }
 
     public static final class ShooterConstants {
@@ -43,19 +45,24 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int kIntakeMotorId = 4; 
-        public static final double kDefaultPower = 0.5;
+        public static final double kDefaultPower = 0.6;
     }
 
     public static final class OIConstants {
         // The driver joystick controls the drivetrain, intake, and indexer
         public static final int kDriverJoystickPort = 0;
-        public static final int kDriverIntakeButton = 1;
-        public static final int kDriverIndexUpButton = 3;
-        public static final int kDriverIndexDownButton = 2;
         // Shooter joystick primarily controls shooter and indexer, but can control intake as well
         public static final int kShooterJoystickPort = 1;
-        public static final int kShooterIntakeButton = 3;
-        public static final int kSHooterIndexerButton = 1;
+
+        // both buttons
+        public static final int kIntakeButton = 1;
+        public static final int kIndexButton = 3;
+        public static final int kReverseIndexButton = 2;
+        public static final int kDriverHorizontalIndexInButton = 4; 
+        public static final int kDriverHorizontalIndexOutButton = 5; 
+        public static final int kDriverSwitchDirection = 8;
+        public static final int kShooterVerticalIndexUpButton = 4; 
+        public static final int kShooterVerticalIndexDownButton = 5; 
     }
 
     public static final class ShuffleboardConstants {

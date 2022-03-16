@@ -18,20 +18,19 @@ import static frc.robot.Constants.ShuffleboardConstants.*;
 
 import java.util.Map;
 
-public class Indexer extends SubsystemBase {
+public class VerticalIndexer extends SubsystemBase {
   private final VictorSPX m_front = new VictorSPX(kVerticalFrontMotorId);
   private final TalonSRX m_back = new TalonSRX(kVerticalBackMotorId);
-  private final VictorSPX m_hori = new VictorSPX(kHorizontalMotorId);
 
   NetworkTableEntry m_power = 
     Shuffleboard.getTab(kDriveTab)
-      .add("Indexer Power", 1)
+      .add("Vertical Indexer Power", kDefaultPower)
       .withWidget(BuiltInWidgets.kNumberSlider)
       .withProperties(Map.of("min", 0, "max", 1))
       .getEntry();
 
   /** Creates a new VerticalIndexer. */
-  public Indexer() {
+  public VerticalIndexer() {
     m_back.follow(m_front);
     m_back.setInverted(InvertType.OpposeMaster);
   }
@@ -44,20 +43,7 @@ public class Indexer extends SubsystemBase {
     m_front.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultPower));
   }
 
-  public void stopVertical() {
+  public void stop() {
     m_front.set(ControlMode.PercentOutput, 0);
   }
-
-  public void horizontalIn() {
-    m_hori.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultPower));
-  }
-  
-  public void horizontalOut() {
-    m_hori.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultPower));
-  }
-
-  public void stopHorizontal() {
-    m_hori.set(ControlMode.PercentOutput, 0);
-  }
-
 }

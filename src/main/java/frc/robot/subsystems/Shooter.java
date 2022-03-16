@@ -11,7 +11,10 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShuffleboardConstants;
+
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.ShuffleboardConstants.*;
 
@@ -29,6 +32,11 @@ public class Shooter extends SubsystemBase {
   //     .withProperties(Map.of("min", 0, "max", 1))
   //     .getEntry();
 
+  NetworkTableEntry m_power = 
+    Shuffleboard.getTab(kDriveTab).
+    add("Shooter Power", 0).
+    withWidget(BuiltInWidgets.kDial).
+    getEntry();
   /** Creates a new Shooter. */
   public Shooter() {
     m_followerMotor.follow(m_masterMotor);
@@ -42,7 +50,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public void spinRaw(double power) {
+    m_power.setDouble(-power * 100);
     m_masterMotor.set(ControlMode.PercentOutput, power);
+  }
+
+  public void stop() {
+    m_masterMotor.set(ControlMode.PercentOutput, 0);
   }
 
 }
