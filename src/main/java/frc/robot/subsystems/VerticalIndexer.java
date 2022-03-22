@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class VerticalIndexer extends SubsystemBase {
   private final VictorSPX m_front = new VictorSPX(kVerticalFrontMotorId);
-  private final TalonSRX m_back = new TalonSRX(kVerticalBackMotorId);
+  private final VictorSPX m_back = new VictorSPX(kVerticalBackMotorId);
 
   NetworkTableEntry m_power = 
     Shuffleboard.getTab(kDriveTab)

@@ -32,19 +32,20 @@ public final class Constants {
     }
 
     public static final class IndexConstants {
-        public static final int kHorizontalMotorId = 6;
-        public static final int kVerticalFrontMotorId = 5;
-        public static final int kVerticalBackMotorId = 7;
+        public static final int kHorizontalMotorId = 2;
+        public static final int kVerticalFrontMotorId = 6;
+        public static final int kVerticalBackMotorId = 5;
         public static final double kDefaultPower = 0.825; 
     }
 
     public static final class ShooterConstants {
-        public static final int kMasterMotorId = 2;
-        public static final int kFollowerMotorId = 3;
+        public static final int kMasterMotorId = 7;
+        public static final int kFollowerMotorId = 4;
+        public static final int kSensorUnitsPerRotation = 4096;
     }
 
     public static final class IntakeConstants {
-        public static final int kIntakeMotorId = 4; 
+        public static final int kIntakeMotorId = 3; 
         public static final double kDefaultPower = 0.6;
     }
 

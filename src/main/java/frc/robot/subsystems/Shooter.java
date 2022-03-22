@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
@@ -21,8 +23,8 @@ import static frc.robot.Constants.ShuffleboardConstants.*;
 import java.util.Map;
 
 public class Shooter extends SubsystemBase {
-  private final VictorSPX m_masterMotor = new VictorSPX(kMasterMotorId);
-  private final VictorSPX m_followerMotor = new VictorSPX(kFollowerMotorId);
+  private final TalonSRX m_masterMotor = new TalonSRX(kMasterMotorId);
+  private final TalonSRX m_followerMotor = new TalonSRX(kFollowerMotorId);
 
   // In case we ever want a set shooter speed
   // NetworkTableEntry m_percentOutput = 
@@ -39,18 +41,22 @@ public class Shooter extends SubsystemBase {
     getEntry();
   /** Creates a new Shooter. */
   public Shooter() {
+    
     m_followerMotor.follow(m_masterMotor);
-
+    
     m_followerMotor.setInverted(InvertType.OpposeMaster);
+    m_masterMotor.setSensorPhase(true);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+      System.out.println("Sensor Vel:" + m_masterMotor.getSelectedSensorVelocity());
+      System.out.println("Sensor Pos:" + m_masterMotor.getSelectedSensorPosition());
+      System.out.println("Out %" + m_masterMotor.getMotorOutputPercent());
   }
 
   public void spinRaw(double power) {
-    m_power.setDouble(-power * 100);
     m_masterMotor.set(ControlMode.PercentOutput, power);
   }
 

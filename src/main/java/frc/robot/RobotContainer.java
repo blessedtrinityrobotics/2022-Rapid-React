@@ -19,6 +19,7 @@ import frc.robot.subsystems.HorizontalIndexer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.VerticalIndexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePistons;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -42,6 +43,7 @@ public class RobotContainer {
   private final Joystick m_joystick = new Joystick(kDriverJoystickPort);
   private final Joystick m_altJoystick = new Joystick(kShooterJoystickPort);
   private final HorizontalIndexer m_horizontalIndexer = new HorizontalIndexer();
+  private final IntakePistons m_intakePistons = new IntakePistons();
 
   // state
   private double directionMultiplier = 1.0;
@@ -75,7 +77,7 @@ public class RobotContainer {
     );
     
     m_shooter.setDefaultCommand(new RunCommand(
-      () -> m_shooter.spinRaw(m_altJoystick.getY()), m_shooter));
+      () -> m_shooter.spinRaw(-m_altJoystick.getY()), m_shooter));
 
     Command indexUp = new InstantCommand(m_verticalIndexer::up, m_verticalIndexer);
     Command indexDown = new InstantCommand(m_verticalIndexer::down, m_verticalIndexer);
