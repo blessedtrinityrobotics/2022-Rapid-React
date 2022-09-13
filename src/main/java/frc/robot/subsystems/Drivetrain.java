@@ -35,11 +35,10 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     m_left.setInverted(true);
 
+    m_rightEncoder.setReverseDirection(true);
     m_leftEncoder.setDistancePerPulse(kDistancePerPulse);
     m_rightEncoder.setDistancePerPulse(kDistancePerPulse);
 
-    Shuffleboard.getTab(kAutoTab).add("Left Encoder", m_leftEncoder);
-    Shuffleboard.getTab(kAutoTab).add("Right Encoder", m_rightEncoder);
   }
   
   public void resetEncoders() {

@@ -43,22 +43,20 @@ public class RobotContainer {
   private final Joystick m_joystick = new Joystick(kDriverJoystickPort);
   private final Joystick m_altJoystick = new Joystick(kShooterJoystickPort);
   private final HorizontalIndexer m_horizontalIndexer = new HorizontalIndexer();
-  private final IntakePistons m_intakePistons = new IntakePistons();
+  //private final IntakePistons m_intakePistons = new IntakePistons();
 
   // state
   private double directionMultiplier = 1.0;
 
-  NetworkTableEntry m_driveTime = Shuffleboard.getTab(ShuffleboardConstants.kAutoTab)
-    .add("Auto Drive Time", AutoConstants.kDefaultDriveTime)
+  NetworkTableEntry m_driveDist = Shuffleboard.getTab(ShuffleboardConstants.kAutoTab)
+    .add("Auto Drive Distance (m)", AutoConstants.kDefaultDriveTime)
     .getEntry();
 
   NetworkTableEntry m_shotPower = Shuffleboard.getTab(ShuffleboardConstants.kAutoTab)
-    .add("Auto shot power", AutoConstants.kDefaultShotPower)
+    .add("Auto Shooter Power (%)", AutoConstants.kDefaultShotPower)
     .getEntry();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -77,7 +75,9 @@ public class RobotContainer {
     );
     
     m_shooter.setDefaultCommand(new RunCommand(
-      () -> m_shooter.spinRaw(-m_altJoystick.getY()), m_shooter));
+      () -> {
+        m_shooter.spin(-m_altJoystick.getY());
+      }, m_shooter));
 
     Command indexUp = new InstantCommand(m_verticalIndexer::up, m_verticalIndexer);
     Command indexDown = new InstantCommand(m_verticalIndexer::down, m_verticalIndexer);
@@ -142,6 +142,18 @@ public class RobotContainer {
     new JoystickButton(m_altJoystick, kShooterVerticalIndexDownButton)
       .whenPressed(indexDown)
       .whenReleased(indexStopVert);
+
+    // new JoystickButton(m_altJoystick, 7)
+    //   .whenPressed(new InstantCommand(m_intakePistons::toggle, m_intakePistons));
+    // new JoystickButton(m_altJoystick, 10)
+    //   .whenPressed(new InstantCommand(m_intakePistons::toggleCompressor, m_intakePistons));
+
+    // new JoystickButton(m_joystick, 7)
+    //   .whenPressed(new InstantCommand(m_intakePistons::toggle, m_intakePistons));
+    // new JoystickButton(m_joystick, 10)
+    //   .whenPressed(new InstantCommand(m_intakePistons::toggleCompressor, m_intakePistons));
+    new JoystickButton(m_altJoystick, 9)
+      .whenPressed(new InstantCommand(m_shooter::toggleMode, m_shooter));
   }
 
   /**
@@ -151,6 +163,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Drive forward 1 meter
-    return new ShootAuto(m_drivetrain, m_shooter, m_verticalIndexer, m_horizontalIndexer, m_driveTime.getDouble(AutoConstants.kDefaultDriveTime), -m_shotPower.getDouble(AutoConstants.kDefaultShotPower));
+    return new ShootAuto(m_drivetrain, m_shooter, m_verticalIndexer, m_horizontalIndexer, m_driveDist.getDouble(AutoConstants.kDefaultDriveTime), m_shotPower.getDouble(AutoConstants.kDefaultShotPower));
   }
 }

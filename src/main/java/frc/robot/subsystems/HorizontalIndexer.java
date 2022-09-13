@@ -17,17 +17,17 @@ public class HorizontalIndexer extends SubsystemBase {
     private final VictorSPX m_motor = new VictorSPX(kHorizontalMotorId);
 
     NetworkTableEntry m_power = Shuffleboard.getTab(kDriveTab)
-      .add("Horizontal Indexer Power", kDefaultPower)
+      .add("Horizontal Power", kDefaultHoriPower)
       .withWidget(BuiltInWidgets.kNumberSlider)
       .withProperties(Map.of("min", 0, "max", 1))
       .getEntry();
 
     public void into() {
-        m_motor.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultPower));
+        m_motor.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultHoriPower));
     }
 
     public void out() {
-        m_motor.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultPower));
+        m_motor.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultHoriPower));
     }
 
     public void stop() {

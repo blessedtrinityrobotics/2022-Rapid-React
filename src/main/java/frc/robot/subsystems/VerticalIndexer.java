@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +25,7 @@ public class VerticalIndexer extends SubsystemBase {
 
   NetworkTableEntry m_power = 
     Shuffleboard.getTab(kDriveTab)
-      .add("Vertical Indexer Power", kDefaultPower)
+      .add("Vertical Power", kDefaultVertPower)
       .withWidget(BuiltInWidgets.kNumberSlider)
       .withProperties(Map.of("min", 0, "max", 1))
       .getEntry();
@@ -36,11 +37,11 @@ public class VerticalIndexer extends SubsystemBase {
   }
 
   public void up() {
-    m_front.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultPower));
+    m_front.set(ControlMode.PercentOutput, m_power.getDouble(kDefaultVertPower));
   }
 
   public void down() {
-    m_front.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultPower));
+    m_front.set(ControlMode.PercentOutput, -m_power.getDouble(kDefaultVertPower));
   }
 
   public void stop() {

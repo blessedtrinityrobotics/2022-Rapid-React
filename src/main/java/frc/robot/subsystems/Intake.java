@@ -19,7 +19,7 @@ import static frc.robot.Constants.ShuffleboardConstants.*;
 import java.util.Map;
 
 public class Intake extends SubsystemBase {
-  private final TalonSRX m_motor = new TalonSRX(kIntakeMotorId);
+  private final VictorSPX m_motor = new VictorSPX(kIntakeMotorId);
 
   NetworkTableEntry m_power = 
     Shuffleboard.getTab(kDriveTab)

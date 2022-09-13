@@ -20,7 +20,7 @@ import frc.robot.subsystems.VerticalIndexer;
 public class ShootAuto extends SequentialCommandGroup {
   public ShootAuto(Drivetrain drivetrain, Shooter shooter, VerticalIndexer vIndex, HorizontalIndexer hIndex, double driveTime, double shotPower) {
     addCommands(
-      new InstantCommand(() -> shooter.spinRaw(shotPower), shooter),
+      new InstantCommand(() -> shooter.spin(shotPower), shooter),
       new WaitCommand(2.0),
       new InstantCommand(hIndex::into, hIndex),
       new InstantCommand(vIndex::up, vIndex),
